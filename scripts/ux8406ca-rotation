@@ -14,8 +14,8 @@ readonly keyboard_product="1bf2"
 readonly upper="eDP-1"
 readonly lower="eDP-2"
 # Hyprland transforms used when gravity points along +x / -x of the sensor.
-readonly transform_x_pos="${UX8406CA_TRANSFORM_X_POS:-3}"
-readonly transform_x_neg="${UX8406CA_TRANSFORM_X_NEG:-1}"
+readonly transform_x_pos="${UX8406CA_TRANSFORM_X_POS:-1}"
+readonly transform_x_neg="${UX8406CA_TRANSFORM_X_NEG:-3}"
 readonly runtime_dir="${XDG_RUNTIME_DIR:-/tmp}"
 readonly lock_file="$runtime_dir/ux8406ca-rotation.lock"
 
