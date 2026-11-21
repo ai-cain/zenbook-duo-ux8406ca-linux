@@ -13,6 +13,15 @@
 #define CONTROL_INTERFACE 4
 #define VENDOR_USAGE_PAGE 0xff31
 #define VENDOR_USAGE 0x0076
+#define BRIGHTNESS_REPEAT_DELAY_MS 400
+#define BRIGHTNESS_REPEAT_RATE_MS 100
+
+static long long now_ms(void) {
+    struct timespec now;
+
+    clock_gettime(CLOCK_MONOTONIC, &now);
+    return (long long)now.tv_sec * 1000 + now.tv_nsec / 1000000;
+}
 
 static int is_control_collection(const struct hid_device_info *device) {
     if (device->vendor_id != ASUS_VENDOR_ID)
@@ -156,8 +165,7 @@ int main(int argc, char **argv) {
             else if (active_command == 0x7e)
                 puts("emoji");
             else
-                printf("unknown 0x%02x
-", active_command);
+                printf("unknown 0x%02x\n", active_command);
             fflush(stdout);
         }
         fwprintf(stderr, L"ux8406ca-fn-send: HID listener ended: %ls\n",
