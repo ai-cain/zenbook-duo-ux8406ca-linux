@@ -38,3 +38,8 @@ end
 for _, d in ipairs({ "elan9009:00-04f3:4446", "elan9009:00-04f3:4446-stylus" }) do
     hl.device({ name = d, output = "eDP-2" })
 end
+
+-- F8 on the ASUS keyboard sends SUPER + P (the Windows display-switch shortcut):
+-- swap the workspaces shown on the upper and lower displays.
+o.rebind("SUPER + P", "Swap upper and lower displays",
+    hl.dsp.workspace.swap_monitors({ monitor1 = "eDP-1", monitor2 = "eDP-2" }))
