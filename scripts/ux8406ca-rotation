@@ -41,7 +41,7 @@ read_posture() {
   y="$(<"$accel_dir/in_accel_y_raw")" || return 1
   z="$(<"$accel_dir/in_accel_z_raw")" || return 1
   ax=${x#-}; ay=${y#-}; az=${z#-}
-  hinge="$(<"$hinge_file" 2>/dev/null)" || hinge=0
+  hinge=0; [[ -r "$hinge_file" ]] && hinge="$(<"$hinge_file")"
   # Raw units are ~1e-5 g; 0.6 g keeps the posture stable while the lid is tilted.
   threshold=600000
   if (( az > ax && az > ay && az > 800000 && hinge >= 160 && hinge <= 200 )); then
