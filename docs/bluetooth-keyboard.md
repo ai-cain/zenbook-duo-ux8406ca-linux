@@ -3,6 +3,11 @@
 The tested keyboard appears as `ASUS Zenbook Duo Keyboard` and works through
 BlueZ without a kernel or repository workaround.
 
+If `scan on` does not list the keyboard, it is not in pairing mode. Detach it,
+make sure its power switch is on, and hold its built-in Bluetooth key (F10)
+until the key's light blinks; then scan again. Validated on a 1920×1200
+UX8406CA: the keyboard only appeared after this step.
+
 Interactive pairing procedure:
 
 ```text

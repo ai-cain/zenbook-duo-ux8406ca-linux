@@ -10,6 +10,7 @@ layout=0
 brightness=0
 keyboard_dock=0
 fn_mode=0
+rotation=0
 privilege_helper="${UX8406CA_PRIVILEGE_HELPER:-sudo}"
 
 as_root() {
@@ -18,13 +19,14 @@ as_root() {
 
 usage() {
   cat <<'EOF'
-Usage: ./install.sh [--layout] [--brightness] [--keyboard-dock] [--fn-mode] [--all] [--list]
+Usage: ./install.sh [--layout] [--brightness] [--keyboard-dock] [--fn-mode] [--rotation] [--all] [--list]
 
   --layout      Install the tested vertical monitor layout
   --brightness  Install independent Omarchy brightness selection
   --keyboard-dock
                 Toggle eDP-2 when the pogo-pin keyboard is docked or removed
   --fn-mode     Install native Fn Lock and keyboard-backlight controls
+  --rotation    Rotate and arrange both panels from the accelerometer
   --all         Install all workarounds
   --list        Show available workarounds
 EOF
@@ -36,7 +38,8 @@ while (( $# > 0 )); do
     --brightness) brightness=1 ;;
     --keyboard-dock) keyboard_dock=1 ;;
     --fn-mode) fn_mode=1 ;;
-    --all) layout=1; brightness=1; keyboard_dock=1; fn_mode=1 ;;
+    --rotation) rotation=1 ;;
+    --all) layout=1; brightness=1; keyboard_dock=1; fn_mode=1; rotation=1 ;;
     --list) usage; exit 0 ;;
     -h|--help) usage; exit 0 ;;
     *) printf 'Unknown option: %s\n' "$1" >&2; usage >&2; exit 2 ;;
@@ -44,7 +47,7 @@ while (( $# > 0 )); do
   shift
 done
 
-if (( ! layout && ! brightness && ! keyboard_dock && ! fn_mode )); then
+if (( ! layout && ! brightness && ! keyboard_dock && ! fn_mode && ! rotation )); then
   usage
   exit 2
 fi
@@ -229,6 +232,12 @@ if (( fn_mode )); then
   ensure_marked_autostart fn-mode fn-mode "$repo_dir/configs/omarchy/fn-mode-autostart.lua"
   "$HOME/.local/bin/ux8406ca-fn-mode" apply
   "$HOME/.local/bin/ux8406ca-keyboard-backlight" apply
+fi
+
+if (( rotation )); then
+  install_managed_file rotation "$repo_dir/scripts/ux8406ca-rotation"     "$HOME/.local/bin/ux8406ca-rotation" ux8406ca-rotation
+  chmod 0755 "$HOME/.local/bin/ux8406ca-rotation"
+  ensure_marked_autostart rotation rotation "$repo_dir/configs/omarchy/rotation-autostart.lua"
 fi
 
 printf 'Done. Apply and validate with: hyprctl reload && hyprctl configerrors\n'

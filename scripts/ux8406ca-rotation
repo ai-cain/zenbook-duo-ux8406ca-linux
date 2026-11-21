@@ -1,0 +1,106 @@
+#!/bin/bash
+# Follow the UX8406CA posture with the accelerometer in the upper (eDP-1) lid.
+#   upright      -> stacked: eDP-1 above eDP-2
+#   upside down  -> stacked, both rotated 180 degrees, eDP-2 above eDP-1
+#   on its side  -> desktop/book mode: both panels rotated, side by side
+# With the keyboard docked on the lower panel, ux8406ca-keyboard-dock owns the
+# layout and this script stays out of the way.
+
+set -u
+
+readonly accel_dir="${UX8406CA_ACCEL_DIR:-/sys/bus/iio/devices/iio:device1}"
+readonly keyboard_vendor="0b05"
+readonly keyboard_product="1bf2"
+readonly upper="eDP-1"
+readonly lower="eDP-2"
+# Hyprland transforms used when gravity points along +x / -x of the sensor.
+readonly transform_x_pos="${UX8406CA_TRANSFORM_X_POS:-3}"
+readonly transform_x_neg="${UX8406CA_TRANSFORM_X_NEG:-1}"
+readonly runtime_dir="${XDG_RUNTIME_DIR:-/tmp}"
+readonly lock_file="$runtime_dir/ux8406ca-rotation.lock"
+
+log() { printf 'ux8406ca-rotation: %s\n' "$*"; }
+
+keyboard_is_docked() {
+  local device
+  for device in /sys/bus/usb/devices/*; do
+    [[ -r "$device/idVendor" && -r "$device/idProduct" ]] || continue
+    [[ "$(<"$device/idVendor")" == "$keyboard_vendor" &&
+       "$(<"$device/idProduct")" == "$keyboard_product" ]] && return 0
+  done
+  return 1
+}
+
+# Print normal|inverted|side-pos|side-neg|unknown from raw readings.
+read_posture() {
+  local x y z ax ay threshold
+  x="$(<"$accel_dir/in_accel_x_raw")" || return 1
+  y="$(<"$accel_dir/in_accel_y_raw")" || return 1
+  z="$(<"$accel_dir/in_accel_z_raw")" || return 1
+  ax=${x#-}; ay=${y#-}
+  # Raw units are ~1e-5 g; 0.6 g keeps the posture stable while the lid is tilted.
+  threshold=600000
+  if (( ay > ax && ay > threshold )); then
+    (( y < 0 )) && echo normal || echo inverted
+  elif (( ax > ay && ax > threshold )); then
+    (( x > 0 )) && echo side-pos || echo side-neg
+  else
+    echo unknown
+  fi
+  : "$z"
+}
+
+monitor_rule() {
+  local output="$1" position="$2" transform="$3"
+  printf 'hl.monitor({ output = "%s", mode = "preferred", position = "%s", scale = "auto", transform = %s })' \
+    "$output" "$position" "$transform"
+}
+
+apply_posture() {
+  local first second transform pos
+  case "$1" in
+    normal) first="$upper"; second="$lower"; transform=0; pos="auto-down" ;;
+    inverted) first="$lower"; second="$upper"; transform=2; pos="auto-down" ;;
+    side-pos) first="$lower"; second="$upper"; transform="$transform_x_pos"; pos="auto-right" ;;
+    side-neg) first="$upper"; second="$lower"; transform="$transform_x_neg"; pos="auto-right" ;;
+    *) return 0 ;;
+  esac
+  hyprctl eval "$(monitor_rule "$first" 0x0 "$transform")" >/dev/null &&
+    hyprctl eval "$(monitor_rule "$second" "$pos" "$transform")" >/dev/null &&
+    log "applied $1"
+}
+
+case "${1:-}" in
+  --status) read_posture; exit ;;
+  "") ;;
+  *) printf 'Usage: %s [--status]\n' "${0##*/}" >&2; exit 2 ;;
+esac
+
+[[ -r "$accel_dir/in_accel_x_raw" ]] || { log "accelerometer not found at $accel_dir"; exit 1; }
+
+exec 9>"$lock_file"
+flock -n 9 || { log "another instance is already running"; exit 0; }
+
+applied="normal"
+candidate=""
+count=0
+while true; do
+  sleep 0.5
+  if keyboard_is_docked; then
+    # The dock script restores the normal layout; start from there on undock.
+    applied="normal"; candidate=""; count=0
+    continue
+  fi
+  posture="$(read_posture)" || continue
+  [[ "$posture" == unknown || "$posture" == "$applied" ]] && { count=0; continue; }
+  if [[ "$posture" == "$candidate" ]]; then
+    (( count++ ))
+  else
+    candidate="$posture"; count=1
+  fi
+  # Require ~1 s of stable readings before switching.
+  if (( count >= 2 )); then
+    apply_posture "$posture" && applied="$posture"
+    count=0
+  fi
+done
