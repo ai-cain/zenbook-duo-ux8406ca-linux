@@ -102,9 +102,29 @@ int main(int argc, char **argv) {
         unsigned char input[64];
         unsigned char active_command = 0x00;
         long long last_emit_ms[256] = {0};
+        long long next_repeat_ms = 0;
         int length;
 
-        while ((length = hid_read(keyboard, input, sizeof(input))) >= 0) {
+        for (;;) {
+            int timeout_ms = -1;
+
+            /* Brightness keys send one report per press and no auto-repeat;
+             * emulate the volume keys' hold-to-repeat until the release report. */
+            if (active_command == 0x10 || active_command == 0x20) {
+                long long left = next_repeat_ms - now_ms();
+                timeout_ms = left > 0 ? (int)left : 0;
+            }
+            length = hid_read_timeout(keyboard, input, sizeof(input), timeout_ms);
+            if (length < 0)
+                break;
+            if (length == 0) {
+                if (active_command == 0x10 || active_command == 0x20) {
+                    puts(active_command == 0x10 ? "brightness-down" : "brightness-up");
+                    fflush(stdout);
+                    next_repeat_ms = now_ms() + BRIGHTNESS_REPEAT_RATE_MS;
+                }
+                continue;
+            }
             if (length < 2 || input[0] != 0x5a)
                 continue;
             if (input[1] == 0x00) {
@@ -114,15 +134,14 @@ int main(int argc, char **argv) {
             if (input[1] == active_command)
                 continue;
             active_command = input[1];
-            if (active_command != 0x10 && active_command != 0x20) {
-                struct timespec now;
-                long long now_ms;
+            if (active_command == 0x10 || active_command == 0x20) {
+                next_repeat_ms = now_ms() + BRIGHTNESS_REPEAT_DELAY_MS;
+            } else {
+                long long now = now_ms();
 
-                clock_gettime(CLOCK_MONOTONIC, &now);
-                now_ms = (long long)now.tv_sec * 1000 + now.tv_nsec / 1000000;
-                if (now_ms - last_emit_ms[active_command] < 2000)
+                if (now - last_emit_ms[active_command] < 2000)
                     continue;
-                last_emit_ms[active_command] = now_ms;
+                last_emit_ms[active_command] = now;
             }
             if (active_command == 0x4e)
                 puts("toggle");
@@ -137,7 +156,8 @@ int main(int argc, char **argv) {
             else if (active_command == 0x7e)
                 puts("emoji");
             else
-                continue;
+                printf("unknown 0x%02x
+", active_command);
             fflush(stdout);
         }
         fwprintf(stderr, L"ux8406ca-fn-send: HID listener ended: %ls\n",

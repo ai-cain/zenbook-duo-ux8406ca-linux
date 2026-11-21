@@ -37,16 +37,6 @@ case "$monitor" in
     ;;
 esac
 
-# The ASUS keyboard sends brightness keys once per press without auto-repeat,
-# so use Windows-like 10% steps instead of Omarchy's 5%.
-for i in "${!original_args[@]}"; do
-  case "${original_args[$i]}" in
-    +5%) original_args[$i]="+10%" ;;
-    5%-) original_args[$i]="10%-" ;;
-    -5%) original_args[$i]="-10%" ;;
-  esac
-done
-
 if [[ ! -x "$original" ]]; then
   printf 'Packaged Omarchy helper is missing or not executable: %s\n' "$original" >&2
   exit 1

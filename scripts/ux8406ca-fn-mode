@@ -298,6 +298,7 @@ watch_events() {
           brightness-up) adjust_display_brightness up ;;
           microphone-mute) toggle_microphone_mute ;;
           emoji) toggle_emoji_picker ;;
+          unknown*) log "unhandled ASUS key code: ${event#unknown }" ;;
         esac
       done < <("$helper" listen)
       log "Fn listener stopped"
