@@ -43,3 +43,7 @@ end
 -- swap the workspaces shown on the upper and lower displays.
 o.rebind("SUPER + P", "Swap upper and lower displays",
     hl.dsp.workspace.swap_monitors({ monitor1 = "eDP-1", monitor2 = "eDP-2" }))
+
+-- Over Bluetooth the same F8 key sends Pause instead of SUPER + P.
+o.bind("Pause", "Swap upper and lower displays",
+    hl.dsp.workspace.swap_monitors({ monitor1 = "eDP-1", monitor2 = "eDP-2" }))

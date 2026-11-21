@@ -148,7 +148,7 @@ int main(int argc, char **argv) {
             } else {
                 long long now = now_ms();
 
-                if (now - last_emit_ms[active_command] < 2000)
+                if (now - last_emit_ms[active_command] < 300)
                     continue;
                 last_emit_ms[active_command] = now;
             }
