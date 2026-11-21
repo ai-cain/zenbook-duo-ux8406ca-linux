@@ -81,7 +81,9 @@ install_managed_file() {
       fi
     fi
     printf 'Install %s: %s\n' "$component" "$destination"
-    cp -- "$source" "$destination"
+    # Replace atomically so running helpers do not fail with "Text file busy".
+    cp -- "$source" "$destination.new.$$"
+    mv -f -- "$destination.new.$$" "$destination"
   fi
 
   sha256sum "$destination" | awk '{print $1}' >"$checksum"
