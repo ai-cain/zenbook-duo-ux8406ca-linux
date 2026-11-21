@@ -66,8 +66,15 @@ apply_posture() {
     *) return 0 ;;
   esac
   hyprctl eval "$(monitor_rule "$first" 0x0 "$transform")" >/dev/null &&
-    hyprctl eval "$(monitor_rule "$second" "$pos" "$transform")" >/dev/null &&
-    log "applied $1"
+    hyprctl eval "$(monitor_rule "$second" "$pos" "$transform")" >/dev/null || return 1
+  # Touch and stylus input do not follow the monitor transform on their own.
+  local device output
+  for device in "elan9008:00-04f3:4445 $upper" "elan9008:00-04f3:4445-stylus $upper" \
+                "elan9009:00-04f3:4446 $lower" "elan9009:00-04f3:4446-stylus $lower"; do
+    output="${device#* }"; device="${device%% *}"
+    hyprctl eval "hl.device({ name = \"$device\", output = \"$output\", transform = $transform })" >/dev/null
+  done
+  log "applied $1"
 }
 
 # Current transform and position of both panels, to detect when something else
