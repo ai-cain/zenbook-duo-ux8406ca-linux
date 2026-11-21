@@ -53,3 +53,15 @@ hyprctl monitors
 
 Expected logical origins are `0x0` and `0x900`. Hyprland reports dimensions and
 positions in logical pixels when scaling is active.
+
+## 1920×1200 panel variant
+
+Some UX8406CA units ship with 1920×1200 OLED panels (upper panel
+`Samsung ATNA40CT06-0`), which only expose `1920x1200@60`. A hard-coded
+`2880x1800@120` mode falls back to 1920×1200 while keeping scale 2 and
+position `0x900`, which leaves a 300 px logical gap that the cursor cannot
+cross. The packaged config therefore uses `mode = "preferred"`,
+`scale = "auto"` and `position = "auto-down"` so the panels touch on both
+variants (validated on 1920×1200: scale 1.5, lower panel at `0x800`).
+On 2880×1800 units, `preferred` may select 60 Hz; set `2880x1800@120`
+explicitly if 120 Hz is wanted.

@@ -43,7 +43,7 @@ apply_state() {
     hyprctl eval "hl.monitor({ output = \"$lower_display\", disabled = true })" >/dev/null || return 1
   else
     log "keyboard detached; enabling $lower_display at $lower_mode"
-    hyprctl eval "hl.monitor({ output = \"$lower_display\", disabled = false, mode = \"2880x1800@120\", position = \"0x900\", scale = 2 })" >/dev/null || return 1
+    hyprctl eval "hl.monitor({ output = \"$lower_display\", disabled = false, mode = \"preferred\", position = \"auto-down\", scale = \"auto\" })" >/dev/null || return 1
   fi
 
   current_state="$wanted"
