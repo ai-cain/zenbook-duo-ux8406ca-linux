@@ -30,3 +30,11 @@ hl.monitor({
     position = "auto-down",
     scale = "auto"
 })
+
+-- Map each panel's touchscreen and stylus to its own display.
+for _, d in ipairs({ "elan9008:00-04f3:4445", "elan9008:00-04f3:4445-stylus" }) do
+    hl.device({ name = d, output = "eDP-1" })
+end
+for _, d in ipairs({ "elan9009:00-04f3:4446", "elan9009:00-04f3:4446-stylus" }) do
+    hl.device({ name = d, output = "eDP-2" })
+end
