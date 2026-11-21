@@ -3,6 +3,7 @@
 #   upright      -> stacked: eDP-1 above eDP-2
 #   upside down  -> stacked, both rotated 180 degrees, eDP-2 above eDP-1
 #   on its side  -> desktop/book mode: both panels rotated, side by side
+#   flat, ~180   -> share mode: upper panel rotated 180 degrees for the person opposite
 # With the keyboard docked on the lower panel, ux8406ca-keyboard-dock owns the
 # layout and this script stays out of the way.
 
@@ -31,49 +32,62 @@ keyboard_is_docked() {
   return 1
 }
 
-# Print normal|inverted|side-pos|side-neg|unknown from raw readings.
+readonly hinge_file="${UX8406CA_HINGE_FILE:-/sys/bus/iio/devices/iio:device2/in_angl0_raw}"
+
+# Print normal|inverted|side-pos|side-neg|shared|unknown from raw readings.
 read_posture() {
-  local x y z ax ay threshold
+  local x y z ax ay az hinge threshold
   x="$(<"$accel_dir/in_accel_x_raw")" || return 1
   y="$(<"$accel_dir/in_accel_y_raw")" || return 1
   z="$(<"$accel_dir/in_accel_z_raw")" || return 1
-  ax=${x#-}; ay=${y#-}
+  ax=${x#-}; ay=${y#-}; az=${z#-}
+  hinge="$(<"$hinge_file" 2>/dev/null)" || hinge=0
   # Raw units are ~1e-5 g; 0.6 g keeps the posture stable while the lid is tilted.
   threshold=600000
-  if (( ay > ax && ay > threshold )); then
+  if (( az > ax && az > ay && az > 800000 && hinge >= 160 && hinge <= 200 )); then
+    # Opened flat on a table: share mode, the upper panel faces the other person.
+    echo shared
+  elif (( ay > ax && ay > threshold )); then
     (( y < 0 )) && echo normal || echo inverted
   elif (( ax > ay && ax > threshold )); then
     (( x > 0 )) && echo side-pos || echo side-neg
   else
     echo unknown
   fi
-  : "$z"
 }
 
 monitor_rule() {
   local output="$1" position="$2" transform="$3"
-  printf 'hl.monitor({ output = "%s", mode = "preferred", position = "%s", scale = "auto", transform = %s })' \
-    "$output" "$position" "$transform"
+  printf 'hl.monitor({ output = "%s", mode = "preferred", position = "%s", scale = "auto", transform = %s })'     "$output" "$position" "$transform"
+}
+
+# Touch and stylus input do not follow the monitor transform on their own.
+map_input() {
+  local output="$1" transform="$2" device
+  case "$output" in
+    "$upper") set -- "elan9008:00-04f3:4445" "elan9008:00-04f3:4445-stylus" ;;
+    "$lower") set -- "elan9009:00-04f3:4446" "elan9009:00-04f3:4446-stylus" ;;
+  esac
+  for device in "$@"; do
+    hyprctl eval "hl.device({ name = \"$device\", output = \"$output\", transform = $transform })" >/dev/null
+  done
 }
 
 apply_posture() {
-  local first second transform pos
+  # first panel at 0x0, second placed relative to it; each with its own transform.
+  local first second t_first t_second pos
   case "$1" in
-    normal) first="$upper"; second="$lower"; transform=0; pos="auto-down" ;;
-    inverted) first="$lower"; second="$upper"; transform=2; pos="auto-down" ;;
-    side-pos) first="$lower"; second="$upper"; transform="$transform_x_pos"; pos="auto-right" ;;
-    side-neg) first="$upper"; second="$lower"; transform="$transform_x_neg"; pos="auto-right" ;;
+    normal) first="$upper"; second="$lower"; t_first=0; t_second=0; pos="auto-down" ;;
+    inverted) first="$lower"; second="$upper"; t_first=2; t_second=2; pos="auto-down" ;;
+    side-pos) first="$lower"; second="$upper"; t_first="$transform_x_pos"; t_second="$transform_x_pos"; pos="auto-right" ;;
+    side-neg) first="$upper"; second="$lower"; t_first="$transform_x_neg"; t_second="$transform_x_neg"; pos="auto-right" ;;
+    shared) first="$upper"; second="$lower"; t_first=2; t_second=0; pos="auto-down" ;;
     *) return 0 ;;
   esac
-  hyprctl eval "$(monitor_rule "$first" 0x0 "$transform")" >/dev/null &&
-    hyprctl eval "$(monitor_rule "$second" "$pos" "$transform")" >/dev/null || return 1
-  # Touch and stylus input do not follow the monitor transform on their own.
-  local device output
-  for device in "elan9008:00-04f3:4445 $upper" "elan9008:00-04f3:4445-stylus $upper" \
-                "elan9009:00-04f3:4446 $lower" "elan9009:00-04f3:4446-stylus $lower"; do
-    output="${device#* }"; device="${device%% *}"
-    hyprctl eval "hl.device({ name = \"$device\", output = \"$output\", transform = $transform })" >/dev/null
-  done
+  hyprctl eval "$(monitor_rule "$first" 0x0 "$t_first")" >/dev/null &&
+    hyprctl eval "$(monitor_rule "$second" "$pos" "$t_second")" >/dev/null || return 1
+  map_input "$first" "$t_first"
+  map_input "$second" "$t_second"
   log "applied $1"
 }
 
