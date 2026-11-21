@@ -70,6 +70,14 @@ apply_posture() {
     log "applied $1"
 }
 
+# Current transform and position of both panels, to detect when something else
+# (a config reload, the dock script) resets the layout behind our back.
+layout_signature() {
+  hyprctl monitors 2>/dev/null |
+    awk '/^Monitor/ {name=$2} / at / {pos=$NF} /transform:/ {print name, $2, pos}' |
+    tr '\n' ' '
+}
+
 case "${1:-}" in
   --status) read_posture; exit ;;
   "") ;;
@@ -82,17 +90,26 @@ exec 9>"$lock_file"
 flock -n 9 || { log "another instance is already running"; exit 0; }
 
 applied="normal"
+applied_layout=""
 candidate=""
 count=0
 while true; do
   sleep 0.5
   if keyboard_is_docked; then
     # The dock script restores the normal layout; start from there on undock.
-    applied="normal"; candidate=""; count=0
+    applied="normal"; applied_layout=""; candidate=""; count=0
     continue
   fi
   posture="$(read_posture)" || continue
-  [[ "$posture" == unknown || "$posture" == "$applied" ]] && { count=0; continue; }
+  [[ "$posture" == unknown ]] && { count=0; continue; }
+  if [[ "$posture" == "$applied" ]]; then
+    count=0
+    # Reapply if the layout was reset while the posture did not change.
+    if [[ -n "$applied_layout" && "$(layout_signature)" != "$applied_layout" ]]; then
+      apply_posture "$posture" && applied_layout="$(layout_signature)"
+    fi
+    continue
+  fi
   if [[ "$posture" == "$candidate" ]]; then
     (( count++ ))
   else
@@ -100,7 +117,7 @@ while true; do
   fi
   # Require ~1 s of stable readings before switching.
   if (( count >= 2 )); then
-    apply_posture "$posture" && applied="$posture"
+    apply_posture "$posture" && applied="$posture" && applied_layout="$(layout_signature)"
     count=0
   fi
 done
