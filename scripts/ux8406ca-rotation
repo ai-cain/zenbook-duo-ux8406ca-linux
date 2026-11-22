@@ -4,8 +4,8 @@
 #   upside down  -> stacked, both rotated 180 degrees, eDP-2 above eDP-1
 #   on its side  -> desktop/book mode: both panels rotated, side by side
 #   flat, ~180   -> share mode: upper panel rotated 180 degrees for the person opposite
-# With the keyboard docked on the lower panel, ux8406ca-keyboard-dock owns the
-# layout and this script stays out of the way.
+# With the keyboard docked, ux8406ca-keyboard-dock disables the lower panel and
+# only the upper one follows the posture.
 
 set -u
 
@@ -83,7 +83,23 @@ map_input() {
   done
 }
 
+# Upper panel alone (keyboard docked, lower panel disabled).
+apply_docked_posture() {
+  local transform
+  case "$1" in
+    normal|shared) transform=0 ;;
+    inverted) transform=2 ;;
+    side-pos) transform="$transform_x_pos" ;;
+    side-neg) transform="$transform_x_neg" ;;
+    *) return 0 ;;
+  esac
+  hyprctl eval "$(monitor_rule "$upper" 0x0 "$transform")" >/dev/null || return 1
+  map_input "$upper" "$transform"
+  log "applied $1 (docked)"
+}
+
 apply_posture() {
+  keyboard_is_docked && { apply_docked_posture "$1"; return; }
   # first panel at 0x0, second placed relative to it; each with its own transform.
   local first second t_first t_second pos
   case "$1" in
@@ -120,21 +136,17 @@ esac
 exec 9>"$lock_file"
 flock -n 9 || { log "another instance is already running"; exit 0; }
 
-applied="normal"
+applied=""
+docked=""
 applied_layout=""
 candidate=""
 count=0
 while true; do
   sleep 0.5
-  if keyboard_is_docked; then
-    # The dock script only disables the lower panel; undo any rotation of the
-    # upper one so the docked laptop is always in its normal posture.
-    if [[ "$applied" != docked ]]; then
-      hyprctl eval "$(monitor_rule "$upper" 0x0 0)" >/dev/null &&
-        map_input "$upper" 0 && log "applied docked" && applied="docked"
-    fi
-    applied_layout=""; candidate=""; count=0
-    continue
+  # Docking or undocking changes which panels exist: reapply the posture.
+  keyboard_is_docked && now_docked=1 || now_docked=0
+  if [[ "$now_docked" != "$docked" ]]; then
+    docked="$now_docked"; applied=""; applied_layout=""; candidate=""; count=0
   fi
   posture="$(read_posture)" || continue
   [[ "$posture" == unknown ]] && { count=0; continue; }
