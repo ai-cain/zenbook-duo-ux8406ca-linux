@@ -179,6 +179,17 @@ sudo pacman -S --needed mosquitto mqttui lazydocker nvtop
 | lazydocker | Contenedores en la terminal |
 | nvtop | Uso de la GPU Intel |
 
+- [ ] Instalar Modbus con GUI desde el AUR (reemplazan a Modbus Poll y Modbus Slave de Windows) y fijarlos en el dock
+
+```bash
+yay -S --needed openmodscan openmodsim
+```
+
+| Herramienta | Para qué |
+|---|---|
+| OpenModScan | Maestro Modbus (como Modbus Poll) |
+| OpenModSim | Esclavo Modbus simulado (como Modbus Slave) |
+
 ---
 
 ## Paso 6: Herramientas del día a día

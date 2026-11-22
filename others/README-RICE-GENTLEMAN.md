@@ -274,6 +274,8 @@ Acceso al puerto serial: agregar tu usuario al grupo `uucp` en Arch (`sudo userm
 
 | Herramienta | Para qué | Link |
 |---|---|---|
+| OpenModScan (`openmodscan` en AUR) | GUI maestro Modbus, reemplazo nativo de Modbus Poll (Windows). TCP y RTU | [OpenModScan](https://github.com/sanny32/OpenModScan) |
+| OpenModSim (`openmodsim` en AUR) | GUI esclavo Modbus, reemplazo nativo de Modbus Slave (Windows). TCP y RTU | [OpenModSim](https://github.com/sanny32/OpenModSim) |
 | mbpoll | Leer y escribir registros Modbus desde CLI | [mbpoll](https://github.com/epsilonrt/mbpoll) |
 | pymodbus | Scripts y simulación de esclavos en Python | [pymodbus](https://github.com/pymodbus-dev/pymodbus) |
 | Wireshark / tshark | Capturar tráfico MQTT y Modbus TCP | [wireshark.org](https://www.wireshark.org) |
