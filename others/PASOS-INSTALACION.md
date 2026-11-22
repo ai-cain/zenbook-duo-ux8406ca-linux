@@ -6,13 +6,13 @@ Lista para ir instalando, un paso a la vez. Sale de
 
 **Cómo usarla**
 
-1. Copia el comando del paso y pégalo en tu terminal (o en el chat de Claude
+1. Copia el comando del paso y pégalo en tu terminal (o en el chat del agente
    con `!` adelante).
 2. Si pide contraseña, escríbela (no se ve mientras escribes, es normal).
 3. Si pregunta `[Y/n]`, presiona **Enter**.
 4. Cuando termine bien, cambia `[ ]` por `[x]`.
 
-Revisado el 2026-11-21: todos los nombres de paquetes existen.
+Actualizado el 2026-11-21 contra lo instalado (`pacman -Q`).
 
 ---
 
@@ -24,19 +24,36 @@ Revisado el 2026-11-21: todos los nombres de paquetes existen.
 - [x] Neovim, herdr, Docker, LibreOffice, btop, gh, lazygit, uv, ffmpeg, mpv, grim, slurp, snapper, yay
 - [x] Repositorio `multilib` activado (necesario para Steam)
 - [x] Touchpad con desplazamiento natural, como en Windows (ver abajo)
+- [x] Git configurado (nombre, correo, editor `nvim`) y `gh` con sesión en `ai-cain`
+- [x] Repos ordenados en `~/code/<dueño>/<repo>` (ver abajo)
+- [x] Limpieza diaria de `~/Downloads` (ver abajo)
 
 ### Configuración personal (fuera del repo)
 
 Estos cambios viven en `~/.config`, no en el repo. Si reinstalas, hay que
-repetirlos (o guardarlos con chezmoi, paso 6).
+repetirlos.
 
 | Cambio | Archivo | Qué se puso |
 |---|---|---|
 | Scroll del touchpad como en Windows | `~/.config/hypr/input.lua` | `natural_scroll = true` dentro de `hl.config({ input = { touchpad = { ... } } })` |
+| Atajo para ver el protector de pantalla | `~/.config/hypr/bindings.lua` | `o.bind("SUPER + CTRL + SHIFT + L", "Screensaver", "omarchy-launch-screensaver force")` |
+| Limpieza de Descargas | `~/.config/systemd/user/downloads-cleanup.{service,timer}` | Cada día manda a la papelera lo que lleva más de 30 días en `~/Downloads` |
 
 Omarchy trae `natural_scroll = false` de fábrica: el scroll se siente al revés
 si vienes de Windows. No es una falla del Zenbook. Para volver: poner `false` y
 guardar.
+
+Para apagar la limpieza de Descargas:
+`systemctl --user disable --now downloads-cleanup.timer`.
+
+### Orden de carpetas
+
+| Carpeta | Qué va |
+|---|---|
+| `~/code/ai-cain/` | Repos personales (este repo, `skill-work`) |
+| `~/code/<organización>/` | Una carpeta por organización (`qalmia`, `cv-alys`, …) |
+| `~/code/_sandbox/` | Repos externos para probar; se pueden borrar sin miedo |
+| `~/Downloads` | Solo de paso: instalar y borrar |
 
 ### Atajos de teclado básicos
 
@@ -57,6 +74,11 @@ guardar.
 | Archivos | `Super + Shift + F` |
 | Menú de Omarchy | `Super + Espacio` |
 | Apagar / reiniciar | `Super + Esc` |
+| Bloquear pantalla | `Super + Ctrl + L` |
+| Ver animaciones (sin bloquear) | `Super + Ctrl + Shift + L` |
+
+Al dejar la laptop quieta: a los 2,5 min salen las animaciones y a los 5 min se
+bloquea (`~/.config/omarchy/shell.json`, sección `idle`).
 
 En Zen: `Ctrl + D` guardar en favoritos, `Ctrl + T` nueva pestaña,
 `Ctrl + W` cerrar pestaña, `Ctrl + Shift + T` recuperar pestaña. Las descargas
@@ -74,13 +96,17 @@ Elegido por: estilo Mac/Arc, código abierto, menos telemetría que Firefox.
 sudo pacman -S --needed zen-browser-bin
 ```
 
-- [ ] Hacerlo el navegador principal (así `Super + Shift + B` abre Zen)
+- [x] Hacerlo el navegador principal (así `Super + Shift + B` abre Zen)
 
 ```bash
-xdg-settings set default-web-browser zen.desktop
+omarchy-default-browser zen
 ```
 
-- [ ] Abrirlo con `Super + Alt + Espacio` → escribir **zen**
+Omarchy fija `$BROWSER`, por eso `xdg-settings` falla con
+"$BROWSER is set and can't be changed".
+
+- [ ] Instalar uBlock Origin (bloqueador de anuncios; Zen no trae uno):
+      <https://addons.mozilla.org/firefox/addon/ublock-origin/> (autor: Raymond Hill)
 - [ ] Opcional: instalar la extensión de Bitwarden dentro de Zen
 
 ---
@@ -90,7 +116,7 @@ xdg-settings set default-web-browser zen.desktop
 Para probar el táctil y el lápiz (presión, inclinación, borrador), que todavía
 no están verificados en este modelo.
 
-- [ ] Instalar
+- [x] Instalar
 
 ```bash
 sudo pacman -S --needed evtest xournalpp rnote krita okular inkscape
@@ -117,9 +143,7 @@ sudo libinput debug-events --show-keycodes
 
 ## Paso 3: Terminal
 
-Tus notas dicen kitty o Ghostty. Omarchy ya trae Ghostty en su repo.
-
-- [ ] Instalar kitty
+- [x] Instalar kitty
 
 ```bash
 sudo pacman -S --needed kitty
@@ -129,7 +153,7 @@ sudo pacman -S --needed kitty
 
 ## Paso 4: Cámara y Steam
 
-- [ ] Instalar
+- [x] Instalar
 
 ```bash
 sudo pacman -S --needed snapshot steam lib32-vulkan-intel
@@ -139,17 +163,13 @@ sudo pacman -S --needed snapshot steam lib32-vulkan-intel
 
 ## Paso 5: Trabajo (IoT, contenedores, monitoreo)
 
-- [ ] Instalar desde pacman
+- [x] Instalar desde pacman
 
 ```bash
 sudo pacman -S --needed mosquitto mqttui lazydocker nvtop
 ```
 
-- [ ] Instalar `tio` (terminal serial para ESP32; viene del AUR)
-
-```bash
-yay -S tio
-```
+- [x] Instalar `tio` (terminal serial para ESP32; viene del AUR, junto con el paso 7)
 
 | Herramienta | Para qué |
 |---|---|
@@ -163,47 +183,54 @@ yay -S tio
 
 ## Paso 6: Herramientas del día a día
 
-- [ ] Instalar
+- [x] Instalar
 
 ```bash
-sudo pacman -S --needed yazi cliphist chezmoi tailscale flatpak
+sudo pacman -S --needed yazi cliphist
 ```
 
 | Herramienta | Para qué |
 |---|---|
 | yazi | Explorador de archivos en la terminal |
 | cliphist | Historial del portapapeles |
-| chezmoi | Guardar tus dotfiles en git |
-| tailscale | Red privada para conectarte a tus equipos desde lejos |
-| flatpak | Necesario para RustConn (paso 7) |
+
+Descartados (no hacen falta por ahora; se instalan en un minuto si cambia):
+
+| Herramienta | Por qué no |
+|---|---|
+| tailscale | Solo sirve para conectarse a equipos remotos sin abrir puertos |
+| flatpak | Solo hacía falta para RustConn, que se instala del AUR |
+| chezmoi | Respaldo de dotfiles en git: opcional |
 
 ---
 
-## Paso 7: Conexiones remotas (SSH, VNC, RDP, serial)
+## Paso 7: Conexiones remotas, serial y API (AUR)
 
-Necesita el paso 6 (flatpak). Reinicia la sesión después de instalar flatpak.
+`yay` muestra el PKGBUILD de cada uno; los tres apuntan a su repo oficial en
+GitHub.
 
-- [ ] Instalar RustConn
+- [x] Instalar (quedó `rustconn-bin`, la versión ya compilada)
 
 ```bash
-flatpak install flathub io.github.totoshko88.RustConn
+yay -S rustconn-bin tio bruno-bin
 ```
 
----
-
-## Paso 8: Bruno (reemplazo de Postman)
-
-Viene del AUR: `yay` muestra el PKGBUILD; revísalo antes de aceptar.
-
-- [ ] Instalar
+- [x] Instalar HeidiSQL (cliente de bases de datos: MySQL, SQL Server, PostgreSQL, SQLite)
 
 ```bash
-yay -S bruno-bin
+yay -S heidisql-qt6-bin
 ```
+
+| Herramienta | Para qué |
+|---|---|
+| RustConn | SSH, VNC, RDP, SPICE y serial con conexiones guardadas |
+| tio | Monitor serial (paso 5) |
+| Bruno | Reemplazo de Postman; colecciones como archivos aptos para git |
+| HeidiSQL | Ver y editar bases de datos; versión nativa Qt6 (liviana, no Electron) |
 
 ---
 
-## Paso 9: Plugins de Omarchy
+## Paso 8: Plugins de Omarchy
 
 Corren sin sandbox: instálalos sin `--enable`, revisa el código y luego actívalos.
 
@@ -224,6 +251,24 @@ omarchy plugin add https://github.com/WhoIsCalebBrown/mic-effects.git
 ```bash
 omarchy plugin list --json
 ```
+
+---
+
+## Paso 9: Agente de IA (Gentle Shell)
+
+- [x] gentle-ai 4.6.0 instalado (`~/go/bin`, enlazado en `~/.local/bin`)
+- [x] Gentle Shell 4.9.0 instalado (trae su propio Pi, gentle-ai y Engram en `~/.gentle-shell`)
+- [ ] Iniciar sesión con un proveedor de modelos: dentro de Gentle Shell, `/login`
+- [ ] Elegir el modelo con `/model` y, opcionalmente, la lista de respaldo con `/gentle:profiles`
+
+Uso diario:
+
+```bash
+cd ~/code/<dueño>/<repo>
+gentle-shell
+```
+
+La sesión de IA se guarda en `~/.gentle-shell/agent/auth.json`: no subirlo a git.
 
 ---
 
