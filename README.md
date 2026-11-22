@@ -7,6 +7,31 @@ This repository documents observed behavior on real hardware. It deliberately
 does not collect old UX8406/UX8406MA kernel patches unless the same defect is
 reproduced on the UX8406CA with a current kernel.
 
+## Origin
+
+This repository started as a copy of
+[hemagome/zenbook-duo-ux8406ca-linux](https://github.com/hemagome/zenbook-duo-ux8406ca-linux)
+by Hector Gomez. It was later adapted to the hardware below: 1920×1200 panels,
+accelerometer-driven rotation (also with the keyboard docked), share mode,
+touch/stylus mapping and a Latin American Spanish keyboard.
+
+## This machine
+
+| Component | Value |
+|---|---|
+| Model | ASUS Zenbook Duo UX8406CA (`UX8406CA_UX8406CA`) |
+| BIOS | `UX8406CA.313` (2026-02-02) |
+| CPU | Intel Core Ultra 9 285H |
+| RAM | 16 GB |
+| Storage | Samsung MZVL8512HFLU 512 GB |
+| Displays | 2× 1920×1200 at 60 Hz (`eDP-1`, `eDP-2`) |
+| Keyboard | ASUS detachable keyboard, Latin American Spanish layout (`latam`) |
+| Linux | `7.2.15-1-omarchy` |
+| Omarchy | `4.5.0-3` |
+| Hyprland | `0.56.2-4` |
+
+The "Tested system" table below is the original author's machine.
+
 ## Tested system
 
 | Component | Tested version / hardware |
