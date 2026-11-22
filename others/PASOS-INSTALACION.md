@@ -69,6 +69,7 @@ Para apagar la limpieza de Descargas:
 | Cerrar ventana | `Super + W` |
 | Pantalla completa | `Super + F` |
 | Terminal | `Super + Enter` |
+| Evitar que salga el protector y se bloquee (para exponer). Volver a pulsar para desactivar | `Super + Ctrl + I` |
 | Lista de apps | `Super + Alt + Espacio` |
 | Navegador | `Super + Shift + B` |
 | Archivos | `Super + Shift + F` |
@@ -308,7 +309,7 @@ barra, lanzador y pantalla de bloqueo.
 
 - [ ] Contraseñas: `bitwarden-cli` (si usas Vaultwarden/Bitwarden) o `keepassxc`
 - [ ] Correo: `aerc` (en la terminal) o `thunderbird`
-- [ ] VNC de respaldo: `remmina`
+- [ ] Remmina (opcional): instalar solo si RustConn no se puede instalar o por gusto personal: `sudo pacman -S remmina libvncserver`
 - [ ] Teclado en pantalla: `yay -S maliit-keyboard` (no está probado en Hyprland)
 - [ ] Gentleman.Dots: respalda `~/.config` antes de usarlo, porque puede pisar tu
       configuración de Neovim y de la shell

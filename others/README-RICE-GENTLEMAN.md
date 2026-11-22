@@ -339,7 +339,7 @@ Sí hay OpenVINO para Linux. Con un Core Ultra puede correr inferencia en CPU, G
 
 ### VNC, SSH y serial (con conexiones guardadas)
 
-**Decisión**: [RustConn](https://flathub.org/apps/io.github.totoshko88.RustConn) como principal (instalar por Flathub), Remmina o RealVNC de respaldo. Reemplaza a Tabby. MQTT queda aparte (RustConn no lo lista): MQTTX o, de respaldo, mqttui.
+**Decisión**: [RustConn](https://flathub.org/apps/io.github.totoshko88.RustConn) como principal (instalar por Flathub). Remmina o RealVNC solo si RustConn no se puede instalar o por gusto personal. Reemplaza a Tabby. MQTT queda aparte (RustConn no lo lista): MQTTX o, de respaldo, mqttui.
 
 | Opción | Pros | Contras | Costo |
 |---|---|---|---|
