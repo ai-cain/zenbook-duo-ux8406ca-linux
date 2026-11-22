@@ -9,7 +9,16 @@
 
 set -u
 
-readonly accel_dir="${UX8406CA_ACCEL_DIR:-/sys/bus/iio/devices/iio:device1}"
+# IIO device numbers change between boots; look the sensors up by name.
+iio_device() {
+  local dev
+  for dev in /sys/bus/iio/devices/iio:device*; do
+    [[ "$(<"$dev/name")" == "$1" ]] 2>/dev/null && { echo "$dev"; return 0; }
+  done
+  return 1
+}
+
+readonly accel_dir="${UX8406CA_ACCEL_DIR:-$(iio_device accel_3d)}"
 readonly keyboard_vendor="0b05"
 readonly keyboard_product="1bf2"
 readonly upper="eDP-1"
@@ -32,7 +41,7 @@ keyboard_is_docked() {
   return 1
 }
 
-readonly hinge_file="${UX8406CA_HINGE_FILE:-/sys/bus/iio/devices/iio:device2/in_angl0_raw}"
+readonly hinge_file="${UX8406CA_HINGE_FILE:-$(iio_device hinge)/in_angl0_raw}"
 
 # Print normal|inverted|side-pos|side-neg|shared|unknown from raw readings.
 read_posture() {
@@ -58,7 +67,8 @@ read_posture() {
 
 monitor_rule() {
   local output="$1" position="$2" transform="$3"
-  printf 'hl.monitor({ output = "%s", mode = "preferred", position = "%s", scale = "auto", transform = %s })'     "$output" "$position" "$transform"
+  printf 'hl.monitor({ output = "%s", mode = "preferred", position = "%s", scale = "auto", transform = %s })' \
+    "$output" "$position" "$transform"
 }
 
 # Touch and stylus input do not follow the monitor transform on their own.
