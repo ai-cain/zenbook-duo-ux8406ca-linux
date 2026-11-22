@@ -127,8 +127,13 @@ count=0
 while true; do
   sleep 0.5
   if keyboard_is_docked; then
-    # The dock script restores the normal layout; start from there on undock.
-    applied="normal"; applied_layout=""; candidate=""; count=0
+    # The dock script only disables the lower panel; undo any rotation of the
+    # upper one so the docked laptop is always in its normal posture.
+    if [[ "$applied" != docked ]]; then
+      hyprctl eval "$(monitor_rule "$upper" 0x0 0)" >/dev/null &&
+        map_input "$upper" 0 && log "applied docked" && applied="docked"
+    fi
+    applied_layout=""; candidate=""; count=0
     continue
   fi
   posture="$(read_posture)" || continue
