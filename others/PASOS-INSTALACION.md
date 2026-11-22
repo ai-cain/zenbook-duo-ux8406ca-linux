@@ -174,10 +174,17 @@ sudo pacman -S --needed mosquitto mqttui lazydocker nvtop
 | Herramienta | Para qué |
 |---|---|
 | mosquitto | Broker MQTT y `mosquitto_pub` / `mosquitto_sub` |
-| mqttui | Ver MQTT en la terminal |
+| mqttui | Ver MQTT en la terminal (respaldo / panel de herdr) |
+| MQTTX | Cliente MQTT con interfaz gráfica y conexiones guardadas (AUR, paso siguiente) |
 | tio | Monitor serial (`tio /dev/ttyUSB0`) |
 | lazydocker | Contenedores en la terminal |
 | nvtop | Uso de la GPU Intel |
+
+- [ ] Instalar MQTTX (cliente MQTT gráfico, open source, guarda conexiones y credenciales)
+
+```bash
+yay -S --needed mqttx-bin
+```
 
 - [ ] Instalar Modbus con GUI desde el AUR (reemplazan a Modbus Poll y Modbus Slave de Windows) y fijarlos en el dock
 

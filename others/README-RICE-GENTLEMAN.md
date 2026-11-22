@@ -252,8 +252,9 @@ Nota de hardware: la Zenbook tiene gráfica Intel integrada, **sin CUDA**. Entre
 | Herramienta | Qué hace | Pros | Contras | Costo |
 |---|---|---|---|---|
 | [mosquitto](https://mosquitto.org) (`mosquitto` en pacman) | Broker y clientes `mosquitto_sub` / `mosquitto_pub` | Estándar, sirve para probar en 1 línea | Solo CLI | Gratis |
-| [mqttui](https://github.com/EdJoPaTo/mqttui) | TUI bacán: árbol de topics, ver y publicar, corre dentro de herdr | Encaja con el flujo de terminal | Menos pulido para payloads binarios grandes. Menos cómodo que MQTTX para guardar conexiones | Gratis |
-| [MQTT Explorer](https://mqtt-explorer.com) | GUI con árbol de topics | Cómoda para depurar muchos dispositivos | Es Electron, pesada | Gratis |
+| [MQTTX](https://mqttx.app) (`mqttx-bin` en AUR) | GUI de EMQ: conexiones y credenciales guardadas, suscripción a topics, publicar, MQTT 5.0 | Open source, mantenido (1.13.3), interfaz cómoda | Es Electron, pesada | Gratis |
+| [mqttui](https://github.com/EdJoPaTo/mqttui) | TUI: árbol de topics, ver y publicar, corre dentro de herdr | Encaja con el flujo de terminal | Menos pulido para payloads binarios grandes. No guarda conexiones (se usan variables de entorno) | Gratis |
+| [MQTT Explorer](https://mqtt-explorer.com) | GUI con árbol de topics | Cómoda para depurar muchos dispositivos | Es Electron, pesada. En el AUR sin actualizar hace más de 600 días | Gratis |
 
 ```bash
 mosquitto_sub -h HOST -t '#' -v          # ver todo (con cuidado en producción)
@@ -330,7 +331,7 @@ Sí hay OpenVINO para Linux. Con un Core Ultra puede correr inferencia en CPU, G
 
 | Tema | Decisión | Notas |
 |---|---|---|
-| MQTT en terminal | [mqttui](https://github.com/EdJoPaTo/mqttui) para el día a día, dentro de herdr | [MQTTX](https://mqttx.app) (GUI) solo si hace falta algo visual. [MQTTX CLI](https://mqttx.app/cli) existe (no verifiqué si trae TUI) |
+| MQTT | [MQTTX](https://mqttx.app) (GUI) como principal: guarda conexiones y credenciales | [mqttui](https://github.com/EdJoPaTo/mqttui) como respaldo dentro de herdr. [MQTTX CLI](https://mqttx.app/cli) existe (no verifiqué si trae TUI) |
 | Tabby | No hace falta | kitty + `ssh` con `~/.ssh/config`, `herdr --remote` y `tio` para serial. [Tabby](https://tabby.sh) existe para Linux pero es Electron |
 | Postman | [Bruno](https://www.usebruno.com) | Open source, colecciones como archivos (aptas para git), sin cuenta. TUI alternativa: [Posting](https://github.com/darrenburns/posting); `curl` para lo rápido |
 | Contenedores | Docker | Compatible con servidores y Jetson. Ojo: el grupo `docker` equivale a root. Alternativa: [Podman](https://podman.io) |
@@ -338,7 +339,7 @@ Sí hay OpenVINO para Linux. Con un Core Ultra puede correr inferencia en CPU, G
 
 ### VNC, SSH y serial (con conexiones guardadas)
 
-**Decisión**: [RustConn](https://flathub.org/apps/io.github.totoshko88.RustConn) como principal (instalar por Flathub), Remmina o RealVNC de respaldo. Reemplaza a Tabby. MQTT queda aparte (RustConn no lo lista): mqttui o MQTTX.
+**Decisión**: [RustConn](https://flathub.org/apps/io.github.totoshko88.RustConn) como principal (instalar por Flathub), Remmina o RealVNC de respaldo. Reemplaza a Tabby. MQTT queda aparte (RustConn no lo lista): MQTTX o, de respaldo, mqttui.
 
 | Opción | Pros | Contras | Costo |
 |---|---|---|---|
