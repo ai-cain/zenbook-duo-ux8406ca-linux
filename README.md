@@ -15,7 +15,10 @@ by Hector Gomez. It was later adapted to the hardware below: 1920×1200 panels,
 accelerometer-driven rotation (also with the keyboard docked), share mode,
 touch/stylus mapping and a Latin American Spanish keyboard.
 
-## This machine
+## Tested on this machine
+
+Everything in this repository is now being tested and maintained on the
+machine below. Results, workarounds and configs reflect this hardware.
 
 | Component | Value |
 |---|---|
@@ -30,11 +33,13 @@ touch/stylus mapping and a Latin American Spanish keyboard.
 | Omarchy | `4.5.0-3` |
 | Hyprland | `0.56.2-4` |
 
-The "Tested system" table below is the original author's machine.
+## Original author's system (upstream reference)
 
-## Tested system
+The table and the 2026-10-19 notes below come from the upstream repository
+and describe the original author's machine, not this one. They are kept as
+reference until each item is re-tested here.
 
-| Component | Tested version / hardware |
+| Component | Upstream version / hardware |
 |---|---|
 | Model | ASUS Zenbook Duo UX8406CA (`UX8406CA_UX8406CA`) |
 | Running Linux | `7.2.8-9-omarchy` (`linux-omarchy 7.2.8-9`) |
