@@ -145,7 +145,7 @@ hyprctl configerrors
 - [Intel VMD NVMe boot stalls](docs/login-startup-timing.md)
 - [Installer design](install/README.md)
 
-Optional: [others/](others/README.md) holds the maintainer's personal notes
+Optional: [personal/](personal/README.md) holds the maintainer's personal notes
 (pre-purchase research and desktop setup ideas, in Spanish). Nothing there is
 required, and the installer does not use it.
 

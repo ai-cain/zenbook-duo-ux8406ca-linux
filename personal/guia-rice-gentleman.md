@@ -1,6 +1,6 @@
 # Zenbook Duo UX8406CA: setup bonito (Hyprland + Gentleman + Zen)
 
-Complemento de `README-UX8406CA.md` (hardware, instalación y workarounds). Aquí va la parte visual y de uso: escritorio, terminal, navegador, lápiz, teclado y dos pantallas.
+Complemento de `guia-zenbook-ux8406ca.md` (hardware, instalación y workarounds). Aquí va la parte visual y de uso: escritorio, terminal, navegador, lápiz, teclado y dos pantallas.
 
 > Todo viene de lo que encontré en README y páginas públicas. No está probado en esta laptop.
 
@@ -235,7 +235,7 @@ Un modo de trabajo que aprovecha todo: teclado Bluetooth desmontado, pantallas a
 
 ## 7. Orden de trabajo
 
-1. Terminar el hardware con `README-UX8406CA.md` (instalar Omarchy, workarounds de hemagome, pruebas de audio, táctil y lápiz).
+1. Terminar el hardware con `guia-zenbook-ux8406ca.md` (instalar Omarchy, workarounds de hemagome, pruebas de audio, táctil y lápiz).
 2. Instalar terminal (Ghostty o kitty) y navegador (Zen o LibreWolf).
 3. Decidir si se usa Gentleman.Dots completo, solo sus piezas, o la config propia de Neovim.
 4. Rice: wallpaper, matugen, Waybar por monitor, hyprlock.
