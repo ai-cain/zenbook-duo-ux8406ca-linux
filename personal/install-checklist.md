@@ -1,8 +1,8 @@
 # Pasos de instalación (checklist)
 
 Lista para ir instalando, un paso a la vez. Sale de
-[guia-zenbook-ux8406ca.md](guia-zenbook-ux8406ca.md) y
-[guia-rice-gentleman.md](guia-rice-gentleman.md).
+[zenbook-research.md](zenbook-research.md) y
+[desktop-setup.md](desktop-setup.md).
 
 **Cómo usarla**
 
