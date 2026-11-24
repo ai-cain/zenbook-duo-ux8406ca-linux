@@ -9,3 +9,5 @@ diagnostics/
 local/
 secrets/
 .build/
+
+.atl/

@@ -50,7 +50,7 @@ of these dynamic Hyprland rules:
 
 ```text
 docked   -> eDP-2,disable
-detached -> eDP-2,2880x1800@120,0x900,2
+detached -> eDP-2,preferred,auto-down,auto   (1920x1200@60, scale 1.5, 0x800 here)
 ```
 
 The script keeps an internal state to ignore duplicate events and uses a

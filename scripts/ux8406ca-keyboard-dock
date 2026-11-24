@@ -5,7 +5,7 @@ set -u
 readonly keyboard_vendor="0b05"
 readonly keyboard_product="1bf2"
 readonly lower_display="eDP-2"
-readonly lower_mode="2880x1800@120,0x900,2"
+readonly lower_mode="preferred,auto-down,auto"
 readonly runtime_dir="${XDG_RUNTIME_DIR:-/tmp}"
 readonly lock_file="$runtime_dir/ux8406ca-keyboard-dock.lock"
 readonly pid_file="$runtime_dir/ux8406ca-keyboard-dock.pid"

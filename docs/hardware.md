@@ -1,20 +1,21 @@
 # Hardware and inspected system
 
-The following was observed directly on an ASUS Zenbook Duo UX8406CA on
-2026-09-08. Identifiers that are unique to one machine are intentionally
+The following was first observed on the upstream author's ASUS Zenbook Duo
+UX8406CA on 2026-09-08 and updated for this machine (Core Ultra 9 285H,
+16 GB, 1920×1200 panels) on 2026-11-24. Identifiers that are unique to one machine are intentionally
 omitted.
 
 | Area | Observed state |
 |---|---|
 | DMI product | `ASUS Zenbook Duo UX8406CA_UX8406CA` |
 | CPU/GPU platform | Intel Arrow Lake-P; integrated Intel Arc, `i915` driver |
-| Internal panels | Two Samsung panels, each 2880×1800, 60/120 Hz modes |
+| Internal panels | Two Samsung panels, each 1920×1200 at 60 Hz (this machine); other units ship 2880×1800 at 60/120 Hz |
 | Touch/stylus | ELAN devices for each panel |
 | Keyboard | `ASUS Zenbook Duo Keyboard`, Bluetooth HID |
 | Wi-Fi | Intel Arrow Lake CNVi, `iwlwifi` |
 | Audio | Intel HD Audio with Realtek ALC294 and dual Cirrus CS35L41 speaker amplifiers through PipeWire |
 | Camera | USB2.0 FHD UVC webcam |
-| SSD | WD PC SN5000S 1 TB class |
+| SSD | Samsung MZVL8512HFLU 512 GB (this machine); upstream unit: WD PC SN5000S 1 TB |
 | Linux storage | LUKS container with Btrfs |
 | Boot | Limine on UEFI; Windows Boot Manager also present |
 

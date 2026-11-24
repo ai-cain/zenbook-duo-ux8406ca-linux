@@ -23,7 +23,7 @@ bug subsequently recurred at 15:10 on `7.2.8-9-omarchy`, with the same
 
 ## Works without repository workarounds
 
-- Both OLED panels, including 2880×1800 at 120 Hz
+- Both OLED panels (1920×1200 at 60 Hz on this machine; 2880×1800 units also expose 120 Hz)
 - Intel Arc integrated graphics, Wayland and Hyprland
 - Wi-Fi and Bluetooth
 - Microphone and webcam

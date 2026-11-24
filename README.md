@@ -70,7 +70,7 @@ amplifiers. The intermittent audio bug remains reproduced on the current kernel.
 | Feature | Status | Notes |
 |---|---|---|
 | Intel Arc graphics / Wayland | ✅ Works upstream | i915 on the tested kernel |
-| Both internal panels at 120 Hz | ✅ Works upstream | Both modes are exposed normally |
+| Both internal panels | ✅ Works upstream | 1920×1200 at 60 Hz on this machine (only mode exposed); 2880×1800 units also expose 120 Hz |
 | Touch and stylus on both panels | ✅ Works upstream | Two touch and two stylus devices detected |
 | Wi-Fi, Bluetooth, microphone, webcam | ✅ Works upstream | No repository workaround required |
 | Internal speakers | ⚠️ Partial / bug reproduced | Reproduced on `7.2.8-9-omarchy`, 2026-10-19 at 15:10, after earlier successful tests and reboots; both amplifiers report `PUP_DONE_MASK: -110`; see [speaker audio investigation](docs/intermittent-speaker-audio.md) |

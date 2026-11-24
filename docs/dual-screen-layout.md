@@ -20,6 +20,10 @@ arrangement still needs local Hyprland policy.
 The incorrect automatic result was logically `eDP-1` at `0x0` and `eDP-2` at
 `1440x0`. The lower panel is physically below the upper panel.
 
+This machine uses the 1920×1200 variant; see
+[1920×1200 panel variant](#19201200-panel-variant). The example below is for
+2880×1800 units.
+
 At scale 2, each 2880×1800 panel occupies 1440×900 logical pixels. Therefore
 the correct lower-panel origin is Y=900:
 

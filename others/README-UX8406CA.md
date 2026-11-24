@@ -72,7 +72,7 @@ Plan B si algo crítico falla (por ejemplo, el audio): dejarla con Windows.
 | Función | Estado |
 |---|---|
 | Gráficos Arc con Wayland | Funciona upstream |
-| Ambos paneles a 120 Hz | Funciona upstream |
+| Ambos paneles (1920×1200 a 60 Hz en esta máquina) | Funciona upstream |
 | Táctil y lápiz en ambos paneles | Funciona upstream (detecta dos dispositivos táctiles y dos de lápiz) |
 | Wi-Fi, Bluetooth, micrófono, webcam | Funciona upstream |
 | LUKS, Btrfs, Limine, arranque dual con Windows | Funciona (depende de la instalación) |
