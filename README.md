@@ -78,6 +78,7 @@ amplifiers. The intermittent audio bug remains reproduced on the current kernel.
 | Vertical dual-screen layout | 🛠 Workaround required | Explicit Hyprland positions and scale |
 | Independent brightness in Omarchy UI | 🛠 Workaround required | Per-monitor backlight wrapper |
 | Detachable Bluetooth keyboard | ✅ Works upstream | Pair and trust with BlueZ |
+| Typing interrupted by palm on keyboard touchpad | 🛠 Workaround required | Click-to-focus and no tap-to-click on the keyboard touchpad; see [typing interruptions](docs/typing-interruptions.md) |
 | Disable lower panel when keyboard covers it | 🛠 Workaround required | Event-driven pogo-pin USB detection |
 | Keyboard Fn layer | 🛠 Workaround required | Native HID mode initialization for USB `1bf2` and Bluetooth `1bf3` |
 | Fn Lock through `Fn+Esc` | 🛠 Workaround required | Native USB/Bluetooth vendor-report listener |
